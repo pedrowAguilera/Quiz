@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  .question {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .option {
+    margin: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="question" id="question"></div>
+<div class="options" id="options"></div>
+<div id="score" style="display: none;">Pontuação: <span id="scoreValue">0</span></div>
+<button id="restartButton" onclick="restartQuiz()" style="display: none;">Reiniciar Quiz</button>
+<p id="congratsMessage" style="display: none;">Parabéns, você acertou todas as questões! Sua pontuação: <span id="finalScore">0</span></p>
+<script>
+const questions = [
+  {
+    question: "Qual é a capital da França?",
+    image: "paris.png",
+    options: ["Madrid", "Paris", "Londres", "Roma"],
+    answer: 1
+  },
+  {
+    question: "Quantos planetas existem em nosso sistema solar?",
+    image: "solar_system.png",
+    options: ["7", "8", "9", "10"],
+    answer: 1
+  },
+  {
+    question: "Qual é o maior mamífero terrestre?",
+    image: "elephant.png",
+    options: ["Elefante", "Girafa", "Rinoceronte", "Leão"],
+    answer: 0
+  },
+  {
+    question: "Qual é o metal líquido à temperatura ambiente?",
+    image: "mercury.jpg",
+    options: ["Ouro", "Prata", "Mercúrio", "Ferro"],
+    answer: 2
+  },
+  {
+    question: "Qual é a montanha mais alta do mundo?",
+    image: "mount_everest.jpg",
+    options: ["Monte Kilimanjaro", "Monte Fuji", "Monte Aconcágua", "Monte Everest"],
+    answer: 3
+  },
+  {
+    question: "Qual é a maior espécie de tubarão?",
+    image: "whale_shark.jpg",
+    options: ["Tubarão Martelo", "Tubarão Branco", "Tubarão-baleia", "Tubarão Tigre"],
+    answer: 2
+  }
+];
+
+let currentQuestion = 0;
+let correctAnswers = 0;
+let score = 0;
+
+function showQuestion() {
+  const questionElement = document.getElementById("question");
+  const optionsElement = document.getElementById("options");
+  
+  questionElement.innerHTML = ""; // Limpar o conteúdo anterior
+  
+  const imageElement = document.createElement("img");
+  imageElement.src = questions[currentQuestion].image;
+  imageElement.alt = "Imagem da questão";
+  imageElement.style.maxWidth = "100%";
+  questionElement.appendChild(imageElement);
+  
+  const questionText = document.createElement("p");
+  questionText.textContent = questions[currentQuestion].question;
+  questionElement.appendChild(questionText);
+  
+  optionsElement.innerHTML = "";
+  
+  for (let i = 0; i < questions[currentQuestion].options.length; i++) {
+    const optionButton = document.createElement("button");
+    optionButton.textContent = questions[currentQuestion].options[i];
+    optionButton.className = "option";
+    optionButton.addEventListener("click", () => selectOption(i));
+    optionsElement.appendChild(optionButton);
+  }
+  
+  document.getElementById("score").style.display = "block";
+  document.getElementById("scoreValue").textContent = score;
+}
+
+function selectOption(selectedIndex) {
+  const selectedOption = questions[currentQuestion].answer;
+  if (selectedIndex === selectedOption) {
+    correctAnswers++;
+    score += 10;
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      showQuestion();
+    } else {
+      document.getElementById("congratsMessage").style.display = "block";
+      document.getElementById("finalScore").textContent = score;
+      document.getElementById("restartButton").style.display = "block";
+      document.getElementById("options").style.display = "none";
+      document.getElementById("score").style.display = "none";
+    }
+  } else {
+    alert("Resposta incorreta. Tente novamente.");
+    restartQuiz(); // Reiniciar o quiz em caso de resposta incorreta
+  }
+}
+
+function restartQuiz() {
+  currentQuestion = 0;
+  correctAnswers = 0;
+  score = 0;
+  showQuestion();
+  document.getElementById("congratsMessage").style.display = "none";
+  document.getElementById("finalScore").textContent = score;
+  document.getElementById("restartButton").style.display = "none";
+  document.getElementById("options").style.display = "flex";
+  document.getElementById("score").style.display = "block";
+}
+
+showQuestion();
+</script>
+</body>
+</html>
